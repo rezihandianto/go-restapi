@@ -14,7 +14,7 @@ This project is a RESTful API built using Go (Golang) that implements JSON Web T
 
 ## Requirements
 
-- Go 1.23.2
+- Go 1.16 or higher
 - MySQL
 - Postman or similar tool for API testing
 
