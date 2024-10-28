@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"test-go/database"
-	"test-go/models"
+	"go-restapi/database"
+	"go-restapi/models"
 
 	"github.com/gofiber/fiber/v2"
 )

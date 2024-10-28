@@ -1,8 +1,8 @@
 package router
 
 import (
-	"test-go/controllers"
-	"test-go/middleware"
+	"go-restapi/controllers"
+	"go-restapi/middleware"
 
 	"github.com/gofiber/fiber/v2"
 )

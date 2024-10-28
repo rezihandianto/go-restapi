@@ -2,8 +2,8 @@ package database
 
 import (
 	"fmt"
+	"go-restapi/models"
 	"os"
-	"test-go/models"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"

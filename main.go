@@ -1,9 +1,9 @@
 package main
 
 import (
+	"go-restapi/database"
+	"go-restapi/router"
 	"log"
-	"test-go/database"
-	"test-go/router"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/joho/godotenv"

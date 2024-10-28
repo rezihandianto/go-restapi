@@ -1,13 +1,34 @@
 package controllers
 
 import (
-	"test-go/database"
-	"test-go/models"
-	"test-go/utils"
+	"errors"
+	"go-restapi/database"
+	"go-restapi/models"
+	"go-restapi/utils"
 	"time"
 
+	"github.com/go-playground/locales/en"
+	ut "github.com/go-playground/universal-translator"
+	"github.com/go-playground/validator/v10"
+	enTranslations "github.com/go-playground/validator/v10/translations/en"
 	"github.com/gofiber/fiber/v2"
 )
+
+type authRequest struct {
+	Email    string `json:"email" validate:"required,email"`
+	Password string `json:"password" validate:"required"`
+}
+
+var (
+	validate = validator.New()
+	english  = en.New()
+	uni      = ut.New(english, english)
+	trans, _ = uni.GetTranslator("en")
+)
+
+func init() {
+	_ = enTranslations.RegisterDefaultTranslations(validate, trans)
+}
 
 func Register(c *fiber.Ctx) error {
 	var req authRequest
@@ -15,6 +36,21 @@ func Register(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"message": err.Error(),
 		})
+	}
+
+	err := validate.Struct(req)
+
+	if err != nil {
+		var errs validator.ValidationErrors
+		errors.As(err, &errs)
+		for _, validationError := range errs {
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+				"error": map[string]string{
+					"field":   validationError.Field(),
+					"message": validationError.Translate(trans),
+				},
+			})
+		}
 	}
 
 	user := models.User{
@@ -39,6 +75,21 @@ func Login(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"message": err.Error(),
 		})
+	}
+
+	err := validate.Struct(req)
+
+	if err != nil {
+		var errs validator.ValidationErrors
+		errors.As(err, &errs)
+		for _, validationError := range errs {
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+				"error": map[string]string{
+					"field":   validationError.Field(),
+					"message": validationError.Translate(trans),
+				},
+			})
+		}
 	}
 
 	var user models.User
@@ -70,11 +121,6 @@ func Login(c *fiber.Ctx) error {
 			UpdatedAt: user.UpdatedAt,
 		},
 	})
-}
-
-type authRequest struct {
-	Email    string `json:"email" validate:"required,email"`
-	Password string `json:"password" validate:"required"`
 }
 
 type userDataShow struct {
